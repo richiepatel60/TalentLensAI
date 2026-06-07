@@ -3,7 +3,15 @@ import streamlit as st
 from services.parser import extract_text
 from services.llm_service import extract_resume_details
 
-st.title("AI Resume Analyzer")
+from services.database import (
+    init_db,
+    save_resume
+)
+
+# Create table if not exists
+init_db()
+
+st.title("TalentLensAI")
 
 uploaded_file = st.file_uploader(
     "Upload Resume",
@@ -13,19 +21,9 @@ uploaded_file = st.file_uploader(
 if uploaded_file:
 
     text = extract_text(uploaded_file)
+
     details = extract_resume_details(text)
 
-    st.subheader("Extracted Text")
-
-    st.text_area(
-        "",
-        text,
-        height=400
-    )
-
-
-    st.subheader("Candidate Details")
-    
     if "error" in details:
 
         st.error(details["error"])
@@ -34,14 +32,23 @@ if uploaded_file:
 
     else:
 
+        # Save to DB
+        save_resume(details)
+
+        st.subheader("Candidate Details")
+
         st.write("Name:", details["name"])
+
         st.write("Email:", details["email"])
+
         st.write("Phone:", details["phone"])
+
         st.write("Job Title:", details["job_title"])
 
-        st.write("Skills")
+        st.write("Skills:")
 
         for skill in details["skills"]:
+
             st.write(f"• {skill}")
 
-    
+        st.success("Candidate saved to database")
