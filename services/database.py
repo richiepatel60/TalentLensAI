@@ -10,25 +10,27 @@ def init_db():
     cursor = conn.cursor()
 
     cursor.execute("""
-    CREATE TABLE IF NOT EXISTS resumes (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        CREATE TABLE IF NOT EXISTS resumes (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
 
-        name TEXT,
-        email TEXT,
-        phone TEXT,
-        job_title TEXT,
+            name TEXT,
+            email TEXT,
+            phone TEXT,
+            job_title TEXT,
 
-        skills TEXT,
+            skills TEXT,
 
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )
+            summary TEXT,
+
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
     """)
 
     conn.commit()
     conn.close()
 
 
-def save_resume(details):
+def save_resume(details,summary):
 
     conn = sqlite3.connect(DB_PATH)
 
@@ -37,23 +39,25 @@ def save_resume(details):
     skills = ",".join(details["skills"])
 
     cursor.execute("""
-    INSERT INTO resumes
-    (
-        name,
-        email,
-        phone,
-        job_title,
-        skills
-    )
-    VALUES (?, ?, ?, ?, ?)
-    """,
-    (
-        details["name"],
-        details["email"],
-        details["phone"],
-        details["job_title"],
-        skills
-    ))
+        INSERT INTO resumes
+        (
+            name,
+            email,
+            phone,
+            job_title,
+            skills,
+            summary
+        )
+        VALUES (?, ?, ?, ?, ?, ?)
+        """,
+        (
+            details["name"],
+            details["email"],
+            details["phone"],
+            details["job_title"],
+            skills,
+            summary
+        ))
 
     conn.commit()
     conn.close()

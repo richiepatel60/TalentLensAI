@@ -33,8 +33,9 @@ if uploaded_file:
     else:
 
         # Save to DB
-        save_resume(details)
         summary = generate_summary(text)
+
+        save_resume(details, summary)
         st.subheader("Candidate Details")
 
         st.write("Name:", details["name"])
