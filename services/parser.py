@@ -28,5 +28,7 @@ def extract_text(uploaded_file):
         )
 
         return text
-
+    elif uploaded_file.name.endswith(".txt"):
+        return uploaded_file.read().decode("utf-8")
+    
     return ""
